@@ -49,6 +49,7 @@ INSERT INTO customers (customer_id, first_name, last_name, email, address) VALUE
 (8, 'Emma', 'Wilson', 'emma@example.com', '321 Redwood St, Country'),
 (9, 'William', 'Taylor', 'william@example.com', '432 Spruce St, Province'),
 (10, 'Olivia', 'Adams', 'olivia@example.com', '765 Fir St, Territory');
+
 INSERT INTO products (product_id, name, description, price, stockQuantity) VALUES
 (1, 'Laptop', 'High-performance laptop', 1200.00, 5),
 (2, 'Smartphone', 'Latest smartphone', 800.00, 10),
@@ -98,3 +99,43 @@ SELECT * FROM products;
 SELECT * FROM cart;
 SELECT * FROM orders;
 SELECT * FROM order_items;
+SELECT product_id FROM products WHERE name = 'Refrigerator';
+DELETE FROM cart WHERE customer_id = 5;
+SELECT * FROM products WHERE price < 100;
+SELECT * FROM products WHERE stockQuantity > 5;
+SELECT * FROM orders WHERE total_price BETWEEN 500 AND 1000;
+SELECT * FROM products WHERE name LIKE '%r';
+SELECT * FROM cart WHERE customer_id = 5;
+SELECT DISTINCT c.*
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date BETWEEN '2023-01-01' AND '2023-12-31';
+SELECT name, MIN(stockQuantity) AS min_stock FROM products GROUP BY name;
+SELECT c.customer_id, SUM(o.total_price) AS total_spent FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
+SELECT c.customer_id, AVG(o.total_price) AS avg_order_amount FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
+SELECT c.customer_id, COUNT(o.order_id) AS order_count FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
+SELECT c.customer_id, MAX(o.total_price) AS max_order_amount FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
+SELECT DISTINCT c.* FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id HAVING SUM(o.total_price) > 1000;
+SELECT * FROM products WHERE product_id NOT IN (SELECT product_id FROM cart);
+SELECT p.name, 
+       (SUM(oi.itemAmount) / (SELECT SUM(itemAmount) FROM order_items)) * 100 AS product_revenue_percentage
+FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.name;
+SELECT 
+    p.name, 
+    (SUM(oi.item_amount) / (SELECT SUM(item_amount) FROM order_items)) * 100 AS product_revenue_percentage  
+FROM order_items oi  
+JOIN products p ON oi.product_id = p.product_id  
+GROUP BY p.name;
+SELECT *  FROM products WHERE stockQuantity < (SELECT 5);
+SELECT * FROM customers WHERE customer_id IN (SELECT customer_id FROM orders WHERE total_price > 1000);
+
+
+
+
+
+
