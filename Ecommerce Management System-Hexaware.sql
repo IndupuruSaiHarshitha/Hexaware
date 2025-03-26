@@ -1,4 +1,5 @@
 USE ecom;
+
 CREATE TABLE customers (
     customer_id INT PRIMARY KEY,
     first_name VARCHAR(50),
@@ -6,6 +7,7 @@ CREATE TABLE customers (
     email VARCHAR(100),
     address VARCHAR(255)
 );
+
 CREATE TABLE products (
     product_id INT PRIMARY KEY,
     name VARCHAR(100),
@@ -13,6 +15,7 @@ CREATE TABLE products (
     price DECIMAL(10, 2),
     stockQuantity INT
 );
+
 CREATE TABLE cart (
     cart_id INT PRIMARY KEY,
     customer_id INT,
@@ -21,6 +24,7 @@ CREATE TABLE cart (
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
 CREATE TABLE orders (
     order_id INT PRIMARY KEY,
     customer_id INT,
@@ -29,6 +33,7 @@ CREATE TABLE orders (
     shipping_address VARCHAR(255),
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
+
 CREATE TABLE order_items (
     order_item_id INT PRIMARY KEY,
     order_id INT,
@@ -38,6 +43,7 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
 INSERT INTO customers (customer_id, first_name, last_name, email, address) VALUES
 (1, 'John', 'Doe', 'johndoe@example.com', '123 Main St, City'),
 (2, 'Jane', 'Smith', 'janesmith@example.com', '456 Elm St, Town'),
@@ -61,6 +67,7 @@ INSERT INTO products (product_id, name, description, price, stockQuantity) VALUE
 (8, 'Microwave Oven', 'Countertop microwave', 80.00, 15),
 (9, 'Blender', 'High-speed blender', 70.00, 20),
 (10, 'Vacuum Cleaner', 'Bagless vacuum cleaner', 120.00, 10);
+
 INSERT INTO cart (cart_id, customer_id, product_id, quantity) VALUES
 (1, 1, 1, 2),
 (2, 1, 3, 1),
@@ -72,6 +79,7 @@ INSERT INTO cart (cart_id, customer_id, product_id, quantity) VALUES
 (8, 6, 10, 2),
 (9, 6, 9, 3),
 (10, 7, 7, 2);
+
 INSERT INTO orders (order_id, customer_id, order_date, total_price, shipping_address) VALUES
 (1, 1, '2023-01-05', 1200.00, '123 Main St, City'),
 (2, 2, '2023-02-10', 900.00, '456 Elm St, Town'),
@@ -83,6 +91,7 @@ INSERT INTO orders (order_id, customer_id, order_date, total_price, shipping_add
 (8, 8, '2023-08-10', 160.00, '321 Redwood St, Country'),
 (9, 9, '2023-09-15', 140.00, '432 Spruce St, Province'),
 (10, 10, '2023-10-20', 1400.00, '765 Fir St, Territory');
+
 INSERT INTO order_items (order_item_id, order_id, product_id, quantity, item_amount) VALUES
 (1, 1, 1, 2, 1600.00),
 (2, 1, 3, 1, 300.00),
@@ -94,45 +103,63 @@ INSERT INTO order_items (order_item_id, order_id, product_id, quantity, item_amo
 (8, 5, 2, 2, 1200.00),
 (9, 6, 10, 2, 240.00),
 (10, 6, 9, 3, 210.00);
+
 SELECT * FROM customers;
 SELECT * FROM products;
 SELECT * FROM cart;
 SELECT * FROM orders;
 SELECT * FROM order_items;
-SELECT product_id FROM products WHERE name = 'Refrigerator';
-DELETE FROM cart WHERE customer_id = 5;
-SELECT * FROM products WHERE price < 100;
-SELECT * FROM products WHERE stockQuantity > 5;
-SELECT * FROM orders WHERE total_price BETWEEN 500 AND 1000;
-SELECT * FROM products WHERE name LIKE '%r';
-SELECT * FROM cart WHERE customer_id = 5;
-SELECT DISTINCT c.*
+============================================================================================================================================
+1.SELECT product_id FROM products WHERE name = 'Refrigerator';
+
+2.DELETE FROM cart WHERE customer_id = 5;
+
+3.SELECT * FROM products WHERE price < 100;
+
+4.SELECT * FROM products WHERE stockQuantity > 5;
+
+5.SELECT * FROM orders WHERE total_price BETWEEN 500 AND 1000;
+
+6.SELECT * FROM products WHERE name LIKE '%r';
+
+7.SELECT * FROM cart WHERE customer_id = 5;
+
+8.SELECT DISTINCT c.*
 FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id
 WHERE o.order_date BETWEEN '2023-01-01' AND '2023-12-31';
-SELECT name, MIN(stockQuantity) AS min_stock FROM products GROUP BY name;
-SELECT c.customer_id, SUM(o.total_price) AS total_spent FROM customers c
+
+9.SELECT name, MIN(stockQuantity) AS min_stock FROM products GROUP BY name;
+
+10.SELECT c.customer_id, SUM(o.total_price) AS total_spent FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
-SELECT c.customer_id, AVG(o.total_price) AS avg_order_amount FROM customers c
+
+11.SELECT c.customer_id, AVG(o.total_price) AS avg_order_amount FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
-SELECT c.customer_id, COUNT(o.order_id) AS order_count FROM customers c
+
+12.SELECT c.customer_id, COUNT(o.order_id) AS order_count FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
-SELECT c.customer_id, MAX(o.total_price) AS max_order_amount FROM customers c
+
+13.SELECT c.customer_id, MAX(o.total_price) AS max_order_amount FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id;
-SELECT DISTINCT c.* FROM customers c
+
+14.SELECT DISTINCT c.* FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id HAVING SUM(o.total_price) > 1000;
-SELECT * FROM products WHERE product_id NOT IN (SELECT product_id FROM cart);
-SELECT p.name, 
-       (SUM(oi.itemAmount) / (SELECT SUM(itemAmount) FROM order_items)) * 100 AS product_revenue_percentage
-FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.name;
-SELECT 
+
+15..SELECT * FROM products WHERE product_id NOT IN (SELECT product_id FROM cart);
+
+16.SELECT * FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM orders);
+
+17.SELECT 
     p.name, 
     (SUM(oi.item_amount) / (SELECT SUM(item_amount) FROM order_items)) * 100 AS product_revenue_percentage  
 FROM order_items oi  
 JOIN products p ON oi.product_id = p.product_id  
 GROUP BY p.name;
-SELECT *  FROM products WHERE stockQuantity < (SELECT 5);
-SELECT * FROM customers WHERE customer_id IN (SELECT customer_id FROM orders WHERE total_price > 1000);
+
+18.SELECT *  FROM products WHERE stockQuantity < (SELECT 5);
+
+19.SELECT * FROM customers WHERE customer_id IN (SELECT customer_id FROM orders WHERE total_price > 1000);
 
 
 
